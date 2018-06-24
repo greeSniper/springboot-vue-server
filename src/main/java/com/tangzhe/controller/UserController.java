@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/add")
     public String add() {
         User user = new User();
-        user.setUsername("杰尔马66");
+        user.setUsername("laowang");
         user.setPassword("666666");
         userService.save(user);
         return "success";
@@ -38,7 +38,7 @@ public class UserController {
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id) {
         User user = userService.findById(id);
-        user.setUsername("海贼王");
+        user.setUsername("laowang666");
         userService.update(user);
         return "success";
     }
