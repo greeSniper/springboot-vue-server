@@ -1,5 +1,6 @@
 package com.tangzhe.controller;
 
+import com.tangzhe.annotation.EnableAuth;
 import com.tangzhe.entity.LoginInfo;
 import com.tangzhe.entity.User;
 import com.tangzhe.service.UserService;
@@ -75,6 +76,12 @@ public class UserController {
             result.put("token", token);
         }
         return result;
+    }
+
+    //@EnableAuth
+    @GetMapping("/testEnableAuth")
+    public String testEnableAuth() {
+        return "测试权限注解成功";
     }
 
 }

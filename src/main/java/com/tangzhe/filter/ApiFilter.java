@@ -2,6 +2,7 @@ package com.tangzhe.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tangzhe.util.JWTUtils;
+import com.tangzhe.util.LoginInfoUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -29,7 +30,21 @@ public class ApiFilter implements Filter {
 		resp.setContentType("application/json;charset=utf-8");
 		String authorization = req.getHeader("Authorization");
 
-		if (StringUtils.isNotBlank(authorization)) {
+		// 判断checkApis中是否包含当前请求的uri
+		if (ApiAuthDataInit.checkApis.contains(req.getRequestURI())) {
+			// 获取当前登录用户
+			String userId = LoginInfoUtils.getLoginUserId(req);
+			if (userId == null) {
+				PrintWriter writer = resp.getWriter();
+				String res = "请先登录";
+				writer.write(res);
+				writer.flush();
+				return;
+			}
+		}
+
+		// 判断token值是否合法
+		if (StringUtils.isNotBlank(authorization) && !"null".equals(authorization)) {
 			JWTUtils.JWTResult result = JWTUtils.getInstance().checkToken(authorization);
 			if (!result.isStatus()) {
 				// 非法请求
@@ -39,11 +54,6 @@ public class ApiFilter implements Filter {
 				writer.flush();
 				return;
 			}
-		} else {
-			PrintWriter writer = resp.getWriter();
-			writer.write("没有登录");
-			writer.flush();
-			return;
 		}
 
 		chain.doFilter(request, response);
