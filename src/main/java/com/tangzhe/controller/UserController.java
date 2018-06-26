@@ -1,14 +1,16 @@
 package com.tangzhe.controller;
 
+import com.tangzhe.entity.LoginInfo;
 import com.tangzhe.entity.User;
 import com.tangzhe.service.UserService;
+import com.tangzhe.util.LoginInfoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 唐哲
@@ -50,8 +52,29 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public List<User> list() {
+    public List<User> list(HttpServletRequest request) {
+        // 获取当前登录用户id
+        System.out.println("当前用户ID: " + LoginInfoUtils.getLoginUserId(request));
         return userService.findAll();
+    }
+
+    @PostMapping("/save")
+    public String save(@RequestBody LoginInfo loginInfo) {
+        System.out.println(loginInfo);
+        return "success";
+    }
+
+    @PostMapping("/login")
+    public Object login(@RequestBody LoginInfo loginInfo) {
+        Map<String, Object> result = new HashMap<>();
+        String token = userService.login(loginInfo);
+        if (token == null) {
+            result.put("status", false);
+        } else {
+            result.put("status", true);
+            result.put("token", token);
+        }
+        return result;
     }
 
 }

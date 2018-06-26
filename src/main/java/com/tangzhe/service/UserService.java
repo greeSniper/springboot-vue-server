@@ -1,5 +1,6 @@
 package com.tangzhe.service;
 
+import com.tangzhe.entity.LoginInfo;
 import com.tangzhe.entity.User;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface UserService {
 
     void delete(Long id);
 
+    String login(LoginInfo loginInfo);
 }
